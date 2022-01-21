@@ -1,4 +1,6 @@
-FROM cblmariner.azurecr.io/base/core:1.0.20211027
+ARG MARINER_VER="1.0.20211027"
+
+FROM cblmariner.azurecr.io/base/core:${MARINER_VER}
 
 # Install build tools.
 RUN tdnf install -y \
