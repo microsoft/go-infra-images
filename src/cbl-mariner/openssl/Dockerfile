@@ -23,5 +23,5 @@ RUN cd /usr/local/src/openssl \
     && make build_libs
 
 # Copy OpenSSL shared libraries and include files into its finall location.
-RUN cp -r /usr/local/src/openssl/include/openssl /usr/include \
+RUN cp -r -L /usr/local/src/openssl/include/openssl /usr/include \
     && cp -H /usr/local/src/openssl/libcrypto.so /usr/lib/libcrypto.so.${OPENSSL_VER}
