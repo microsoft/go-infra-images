@@ -1,4 +1,4 @@
-FROM cblmariner.azurecr.io/base/core:1.0.20211027
+FROM cblmariner.azurecr.io/base/core:1.0
 
 # Install dependencies needed to build, test, and longtest Go.
 RUN tdnf install -y \
