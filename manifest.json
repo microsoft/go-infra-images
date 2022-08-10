@@ -1,0 +1,96 @@
+{
+  "readme": {
+    "path": "README.md"
+  },
+  "registry": "golangpublicimages.azurecr.io",
+  "variables": {},
+  "includes": [],
+  "repos": [
+    {
+      "id": "prereqs",
+      "name": "go-infra-images/prereqs",
+      "images": [
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "amd64",
+              "dockerfile": "src/cbl-mariner/1.0/amd64/default",
+              "os": "linux",
+              "osVersion": "1.0",
+              "tags": {
+                "cbl-mariner-1.0-amd64-default": {},
+                "cbl-mariner-1.0-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+              }
+            }
+          ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "amd64",
+              "dockerfile": "src/cbl-mariner/1.0/amd64/fips",
+              "os": "linux",
+              "osVersion": "1.0",
+              "tags": {
+                "cbl-mariner-1.0-amd64-fips": {},
+                "cbl-mariner-1.0-amd64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+              }
+            }
+          ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "arm64",
+              "dockerfile": "src/cbl-mariner/1.0/arm64/default",
+              "os": "linux",
+              "osVersion": "1.0",
+              "tags": {
+                "cbl-mariner-1.0-arm64-default": {},
+                "cbl-mariner-1.0-arm64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+              }
+            }
+          ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "arm64",
+              "dockerfile": "src/cbl-mariner/1.0/arm64/fips",
+              "os": "linux",
+              "osVersion": "1.0",
+              "tags": {
+                "cbl-mariner-1.0-arm64-fips": {},
+                "cbl-mariner-1.0-arm64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+              }
+            }
+          ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "amd64",
+              "dockerfile": "src/ubuntu/18.04/amd64/default",
+              "os": "linux",
+              "osVersion": "18.04",
+              "tags": {
+                "ubuntu-18.04-amd64-default": {},
+                "ubuntu-18.04-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

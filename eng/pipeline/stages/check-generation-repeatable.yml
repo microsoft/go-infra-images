@@ -1,0 +1,28 @@
+# Check that manifest generation is repeatable.
+stages:
+  - stage: Repeatability
+    dependsOn: []
+    jobs:
+      - job: Test
+        pool:
+          # This is a utility job: use generic recent LTS.
+          vmImage: ubuntu-20.04
+        workspace:
+          clean: all
+        steps:
+          - template: ../steps/checkout-unix-task.yml
+
+          - task: GoTool@0
+            inputs:
+              version: 1.19
+
+          - script: go run ./cmd/geninfraimagesmanifest
+            displayName: Run geninfraimagesmanifest
+
+          - script: |
+              set -eux
+              # Add files, so new untracked files don't evade detection.
+              git add .
+              # Exit code 1 = differences, 0 = no differences.
+              git diff --cached --exit-code -- src manifest.json
+            displayName: Ensure no changes
