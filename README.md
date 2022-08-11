@@ -1,8 +1,20 @@
 # Microsoft Go Infrastructure Docker Images
 
-The Dockerfiles in this repository are used by Microsoft to produce Docker
-images that support building and testing the Go compiler inside Microsoft
-infrastructure.
+The Dockerfiles in this repository are used by Microsoft to produce Docker images that support building and testing the Go compiler inside Microsoft infrastructure.
+
+## Prerequisites
+
+* [PowerShell 6+](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
+
+## Building the Docker images
+
+To build a specific docker image, run `docker build .` in a directory that contains a Dockerfile.
+
+To build all Docker tags in this repository, run `pwsh build.ps1` in the root of the repository.
+
+## Updating manifest.json
+
+After modifying the Dockerfiles, run `go run ./cmd/geninfraimagesmanifest` in the root of the repository. This regenerates the `manifest.json` file according to directory naming conventions. The `manifest.json` file is used by the `build.ps1` build process and CI builds.
 
 ## Contributing
 
