@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-// Geninfraimagesmanifest genereates the manifest.json file to let .NET Docker infrastructure build
+// Geninfraimagesmanifest generates the manifest.json file to let .NET Docker infrastructure build
 // this repository. It searches "src" for Dockerfiles and parses the directory path to determine how
 // each Dockerfile should be built and tagged.
 //
@@ -37,6 +37,7 @@ func run() error {
 		pathParts := strings.Split(path, string(filepath.Separator))
 		if len(pathParts) < 6 {
 			log.Printf("Not enough path parts to apply convention, skipping: %v\n", pathParts)
+			return nil
 		}
 		distro := pathParts[1]
 		version := pathParts[2]
