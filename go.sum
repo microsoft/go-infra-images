@@ -1,2 +1,2 @@
-github.com/microsoft/go-infra v0.0.0-20220725190028-9e939dff87e1 h1:I2ZRoPI4mzL0ZjDljPqfbUyrZMFbLDYWnSH6GZQ2tYw=
-github.com/microsoft/go-infra v0.0.0-20220725190028-9e939dff87e1/go.mod h1:Y/uWKJY8MfoXe7BL4TJxqJ14E4NvcYAZIHz2SnerZZE=
+github.com/microsoft/go-infra v0.0.1 h1:kO65ePYOzJsVaDK3yS4T6gRPnIXXFIRPKVGUQxqxHR0=
+github.com/microsoft/go-infra v0.0.1/go.mod h1:U59oDLSUu5p7h8JnntULj9njHPK8Pm4E8AtYNBGH73E=
