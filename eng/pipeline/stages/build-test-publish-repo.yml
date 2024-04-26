@@ -1,5 +1,7 @@
 # Create Go Docker image build and publish stages.
 parameters:
+  internalProjectName: null
+  publicProjectName: null
   extraParameters: {}
 
 stages:
@@ -7,28 +9,63 @@ stages:
     parameters:
       buildMatrixCustomBuildLegGroupArgs: --custom-build-leg-group build
       noCache: true
+      internalProjectName: ${{ parameters.internalProjectName }}
+      publicProjectName: ${{ parameters.publicProjectName }}
       # Template paths must be relative to the YAML job that executes them
       customBuildInitSteps:
         - template: ../../../pipeline/steps/set-public-source-branch-var.yml
       customPublishInitSteps:
         - template: ../../../pipeline/steps/set-public-source-branch-var.yml
-      # Specific pools for arm builds.
+
+      # Linux AMD64
+      linuxAmd64Pool:
+        ${{ if eq(variables['System.TeamProject'], parameters.publicProjectName) }}:
+          vmImage: $(defaultLinuxAmd64PoolImage)
+        ${{ elseif eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+          name: NetCore1ESPool-Internal
+          image: 1es-ubuntu-2204
+          os: linux
+          
+      # Linux Arm64
       linuxArm64Pool:
-        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+        os: linux
+        hostArchitecture: Arm64
+        image: Mariner-2-Docker-ARM64
+        ${{ if eq(variables['System.TeamProject'], parameters.publicProjectName) }}:
           name: DotNetCore-Docker-Public
-        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
+        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
           name: Docker-Linux-Arm-Internal
+
+      # Linux Arm32
       linuxArm32Pool:
-        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+        os: linux
+        hostArchitecture: Arm64
+        image: Mariner-2-Docker-ARM64
+        ${{ if eq(variables['System.TeamProject'], parameters.publicProjectName) }}:
           name: DotNetCore-Docker-Public
-        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
+        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
           name: Docker-Linux-Arm-Internal
-      # On Windows, 'docker login' is incompatible with 'manifest-tool' unless we use these pools.
-      # https://github.com/dotnet/docker-tools/issues/905
-      windows2016Pool: Docker-2016-${{ variables['System.TeamProject'] }}
-      windows1809Pool: Docker-1809-${{ variables['System.TeamProject'] }}
-      windows2004Pool: Docker-2004-${{ variables['System.TeamProject'] }}
-      windows20H2Pool: Docker-20H2-${{ variables['System.TeamProject'] }}
-      windows2022Pool: Docker-2022-${{ variables['System.TeamProject'] }}
+
+      # Windows Server 2016
+      windows2016Pool:
+        os: windows
+        name: Docker-2016-${{ variables['System.TeamProject'] }}
+        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+          image: Server2016-NESDockerBuilds-PT
+
+      # Windows Server 2019 (1809)
+      windows1809Pool:
+        os: windows
+        name: Docker-1809-${{ variables['System.TeamProject'] }}
+        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+          image: Server2019-1809-NESDockerBuilds-1ESPT
+
+      # Windows Server 2022
+      windows2022Pool:
+        os: windows
+        name: Docker-2022-${{ variables['System.TeamProject'] }}
+        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+          image: Server2022-NESDockerBuilds-1ESPT
+
       ${{ each pair in parameters.extraParameters }}:
         ${{ pair.key }}: ${{ pair.value }}
