@@ -56,8 +56,6 @@ extends:
       codeql:
         enabledOnNonDefaultBranches: ${{ parameters.enableCodeQL }}
         language: go,powershell
-      suppression:
-        suppressionFile: $(Build.SourcesDirectory)/eng/compliance/.gdnsuppress
       tsa:
         enabled: ${{ not(parameters.disableTSA) }}
         configFile: $(Build.SourcesDirectory)/.config/tsa/tsaoptions.json
