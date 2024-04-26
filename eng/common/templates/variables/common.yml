@@ -1,12 +1,18 @@
 variables:
-- template: docker-images.yml
-- template: common-paths.yml
+- template: /eng/common/templates/variables/docker-images.yml@self
+- template: /eng/common/templates/variables/common-paths.yml@self
 - name: stagingRepoPrefix
   value: build-staging/$(sourceBuildId)/
 - name: publishReadme
   value: true
-- name: skipComponentGovernanceDetection
+- name: publishImageInfo
   value: true
+- name: ingestKustoImageInfo
+  value: true
+  # CG is disabled by default because projects are built within Dockerfiles and CG step do not scan artifacts
+  # that are built within Dockerfiles. A separate CG pipeline exists for this reason.
+- name: skipComponentGovernanceDetection
+  value: false
 - name: build.imageBuilderDockerRunExtraOptions
   value: ""
 - name: imageBuilderDockerRunExtraOptions
@@ -15,8 +21,6 @@ variables:
   value: 2
 - name: imageInfoVariant
   value: ""
-- name: ingestKustoImageInfo
-  value: true
 - name: publishNotificationsEnabled
   value: false
 - name: manifestVariables
@@ -26,12 +30,18 @@ variables:
 - name: mcrDocIngestionTimeout
   value: "00:05:00"
 - name: officialBranches
-  # list multiple branches as "'branch1', 'branch2', etc."
-  value: "'main'"
+  # comma-delimited list of branch names
+  value: main
 - name: mirrorRepoPrefix
   value: 'mirror/'
 - name: cgBuildGrepArgs
   value: "''"
+- name: test.init
+  value: ""
+- name: testRunner.options
+  value: ""
+- name: customCopyBaseImagesArgs
+  value: ""
 
 - name: defaultLinuxAmd64PoolImage
   value: ubuntu-latest
@@ -43,7 +53,5 @@ variables:
   value: vs2017-win2016
 - name: defaultWindows1809PoolImage
   value: windows-2019
-- name: defaultWindows20H2PoolImage
-  value: null
 - name: defaultWindows2022PoolImage
   value: windows-2022

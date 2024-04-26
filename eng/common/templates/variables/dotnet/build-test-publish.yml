@@ -1,7 +1,7 @@
 # Common variables for building/testing/publishing in the .NET team's pipelines
 
 variables:
-- template: common.yml
+- template: /eng/common/templates/variables/dotnet/common.yml@self
 
 - name: commonVersionsImageInfoPath
   value: build-info/docker
@@ -11,8 +11,8 @@ variables:
   value: ./tests/run-tests.ps1
 - name: testResultsDirectory
   value: tests/Microsoft.DotNet.Docker.Tests/TestResults/
-- name: officialRepoPrefix
-  value: public/
+- name: officialRepoPrefixes
+  value: public/,internal/private/
 
 - name: mcrDocsRepoInfo.accessToken
   value: $(BotAccount-dotnet-docker-bot-PAT)
