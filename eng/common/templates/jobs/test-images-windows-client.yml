@@ -4,6 +4,7 @@ parameters:
   matrix: {}
   testJobTimeout: 60
   internalProjectName: null
+  customInitSteps: []
 
 jobs:
 - job: ${{ parameters.name }}
@@ -14,6 +15,7 @@ jobs:
     matrix: $[ ${{ parameters.matrix }} ]
   timeoutInMinutes: ${{ parameters.testJobTimeout }}
   steps:
-  - template: ../steps/test-images-windows-client.yml
+  - template: /eng/common/templates/steps/test-images-windows-client.yml@self
     parameters:
       internalProjectName: ${{ parameters.internalProjectName }}
+      customInitSteps: ${{ parameters.customInitSteps }}

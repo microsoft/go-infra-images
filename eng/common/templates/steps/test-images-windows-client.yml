@@ -1,11 +1,13 @@
 parameters:
   internalProjectName: null
   condition: true
+  customInitSteps: []
 
 steps:
-- ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
-  - template: init-docker-windows.yml
+- ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
+  - template: /eng/common/templates/steps/init-docker-windows.yml@self
     parameters:
+      cleanupDocker: true
       setupImageBuilder: false
       condition: ${{ parameters.condition }}
   - powershell: >
@@ -13,10 +15,11 @@ steps:
       "cmd /c 'docker login -u $(acr.userName) --password $(acr.password) $(acr.server) 2>&1'"
     displayName: Docker login
     condition: and(succeeded(), ${{ parameters.condition }})
+- ${{ parameters.customInitSteps }}
 - powershell: |
-    if ("${{ variables['System.TeamProject'] }}" -eq "${{ parameters.internalProjectName }}") {
-      $optionalTestArgs="$optionalTestArgs -PullImages -Registry $env:ACR_SERVER -RepoPrefix $env:STAGINGREPOPREFIX -ImageInfoPath $(artifactsPath)/image-info/image-info.json"
-    } 
+    if ("${{ variables['System.TeamProject'] }}" -eq "${{ parameters.internalProjectName }}" -and "${{ variables['Build.Reason'] }}" -ne "PullRequest") {
+      $optionalTestArgs="$optionalTestArgs -PullImages -Registry $env:ACR_SERVER -RepoPrefix $env:STAGINGREPOPREFIX -ImageInfoPath $(artifactsPath)/image-info.json"
+    }
     if ($env:REPOTESTARGS) {
       $optionalTestArgs += " $env:REPOTESTARGS"
     }
@@ -26,19 +29,22 @@ steps:
 - powershell: Get-ChildItem -Path tests -r | Where {$_.Extension -match "trx"} | Remove-Item
   displayName: Cleanup Old Test Results
   condition: and(succeeded(), ${{ parameters.condition }})
-- ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
-  - template: ../steps/download-build-artifact.yml
+- ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
+  - template: /eng/common/templates/steps/download-build-artifact.yml@self
     parameters:
       targetPath: $(Build.ArtifactStagingDirectory)
+      artifactName: image-info
       condition: ${{ parameters.condition }}
+- template: /eng/common/templates/steps/parse-test-arg-arrays.yml@self
 - powershell: >
+    $(test.init);
     $(testScriptPath)
-    -Version '$(productVersion)'
-    -OS '$(osVariant)'
+    -Paths $(imageBuilderPathsArrayInitStr)
+    -OSVersions $(osVersionsArrayInitStr)
     $(optionalTestArgs)
   displayName: Test Images
   condition: and(succeeded(), ${{ parameters.condition }})
-- ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+- ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
   - script: docker logout $(acr.server)
     displayName: Docker logout
     condition: and(always(), ${{ parameters.condition }})
@@ -52,8 +58,4 @@ steps:
     testResultsFiles: '$(testResultsDirectory)/**/*.trx'
     mergeTestResults: true
     publishRunAttachments: true
-    testRunTitle: $(productVersion) $(osVariant) amd64
-- ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
-  - template: cleanup-docker-windows.yml
-    parameters:
-      condition: ${{ parameters.condition }}
+    testRunTitle: $(productVersion) $(osVersionsDisplayName) amd64
