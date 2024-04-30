@@ -2,7 +2,7 @@
 parameters:
   internalProjectName: null
   publicProjectName: null
-  extraParameters: {}
+  buildMatrixType: platformDependencyGraph
 
 stages:
   - template: ../../common/templates/stages/build-test-publish-repo.yml
@@ -11,6 +11,7 @@ stages:
       noCache: true
       internalProjectName: ${{ parameters.internalProjectName }}
       publicProjectName: ${{ parameters.publicProjectName }}
+      buildMatrixType: ${{ parameters.buildMatrixType }}
       # Template paths must be relative to the YAML job that executes them
       customBuildInitSteps:
         - template: ../../../pipeline/steps/set-public-source-branch-var.yml
@@ -66,6 +67,3 @@ stages:
         name: Docker-2022-${{ variables['System.TeamProject'] }}
         ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
           image: Server2022-NESDockerBuilds-1ESPT
-
-      ${{ each pair in parameters.extraParameters }}:
-        ${{ pair.key }}: ${{ pair.value }}
