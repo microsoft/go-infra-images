@@ -1,4 +1,4 @@
-github.com/microsoft/go-infra v0.0.3 h1:HfmZFPfUOlvvzd97XBTwhq1EJ0AlSuIzqSq/ymjaBr4=
-github.com/microsoft/go-infra v0.0.3/go.mod h1:9QccxlHX1T63uM8cDwU77h26G53XXuydobGbDHxmR7M=
+github.com/microsoft/go-infra v0.0.4 h1:VOAdESUaBMpwY+tzlvQbD2coSjP7gMNXB8FCfsdFmGk=
+github.com/microsoft/go-infra v0.0.4/go.mod h1:FxSudYLTYTeK3vMXD7Mpvs6rjHg4YU1/M1w3t7PfSBU=
 golang.org/x/text v0.16.0 h1:a94ExnEXNtEwYLGJSIUxnWoxoRz/ZcCsV63ROupILh4=
 golang.org/x/text v0.16.0/go.mod h1:GhwF1Be+LQoKShO3cGOHzqOgRrGaYc9AvblQOmPVHnI=
