@@ -1,19 +1,24 @@
 parameters:
   repo: null
+  subscription: null
+  resourceGroup: null
+  acr: null
   action: null
   age: null
   customArgs: ""
+  internalProjectName: null
 steps:
-  - script: >
-      $(runImageBuilderCmd) cleanAcrImages
-      ${{ parameters.repo }}
-      $(acr.servicePrincipalName)
-      $(app-dotnetdockerbuild-client-secret)
-      $(acr.servicePrincipalTenant)
-      $(acr.subscription)
-      $(acr.resourceGroup)
-      $(acr.server)
-      --action ${{ parameters.action }}
-      --age ${{ parameters.age }}
-      ${{ parameters.customArgs }}
-    displayName: Clean ACR Images - ${{ parameters.repo }}
+  - template: /eng/common/templates/steps/run-imagebuilder.yml@self
+    parameters:
+      displayName: Clean ACR Images - ${{ parameters.repo }}
+      serviceConnection: $(clean.serviceConnectionName)
+      internalProjectName: ${{ parameters.internalProjectName }}
+      args: >
+        cleanAcrImages
+        ${{ parameters.repo }}
+        ${{ parameters.subscription }}
+        ${{ parameters.resourceGroup }}
+        ${{ parameters.acr }}
+        --action ${{ parameters.action }}
+        --age ${{ parameters.age }}
+        ${{ parameters.customArgs }}

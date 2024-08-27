@@ -88,16 +88,21 @@ jobs:
     condition: eq(variables.imageBuilderBuildArgs, '')
     displayName: Initialize Image Builder Build Args
   - powershell: |
+      New-Item -Path $(imageInfoHostDir) -ItemType Directory -Force
+
       # Reference the existing imageBuilderBuildArgs variable as an environment variable rather than injecting it directly
       # with the $(imageBuilderBuildArgs) syntax. This is to avoid issues where the string may contain single quotes $ chars
       # which really mess up assigning to a variable. It would require assigning the string with single quotes but also needing
       # to escape the single quotes that are in the string which would need to be done outside the context of PowerShell. Since
       # all we need is for that value to be in a PowerShell variable, we can get that by the fact that AzDO automatically creates
       # the environment variable for us.
-      New-Item -Path $(imageInfoHostDir) -ItemType Directory -Force
       $imageBuilderBuildArgs = "$env:IMAGEBUILDERBUILDARGS $(imageBuilder.queueArgs) --image-info-output-path $(imageInfoContainerDir)/$(legName)-image-info.json"
       if ($env:SYSTEM_TEAMPROJECT -eq "${{ parameters.internalProjectName }}" -and $env:BUILD_REASON -ne "PullRequest") {
-        $imageBuilderBuildArgs = "$imageBuilderBuildArgs --registry-override $(acr.server) --repo-prefix $(stagingRepoPrefix) --source-repo-prefix $(mirrorRepoPrefix) --push --registry-creds ""$(acr.server)=$(acr.userName);$(acr.password)"""
+        $imageBuilderBuildArgs = "$imageBuilderBuildArgs --registry-override $(acr-staging.server) --repo-prefix $(stagingRepoPrefix) --source-repo-prefix $(mirrorRepoPrefix) --push"
+      }
+
+      if ($env:SYSTEM_TEAMPROJECT -eq "${{ parameters.publicProjectName }}" -and ${env:PUBLIC-MIRROR_SERVER} -ne "") {
+        $imageBuilderBuildArgs = "$imageBuilderBuildArgs --base-override-regex '^(?!mcr\.microsoft\.com)' --base-override-sub '$(public-mirror.server)/'"
       }
 
       # If the pipeline isn't configured to disable the cache and a build variable hasn't been set to disable the cache
@@ -105,27 +110,30 @@ jobs:
         $imageBuilderBuildArgs = "$imageBuilderBuildArgs --image-info-source-path $(versionsBasePath)$(imageInfoVersionsPath)"
       }
 
+      echo "imageBuilderBuildArgs: $imageBuilderBuildArgs"
       echo "##vso[task.setvariable variable=imageBuilderBuildArgs]$imageBuilderBuildArgs"
     displayName: Set Image Builder Build Args
-  - powershell: >
-      $(runImageBuilderCmd) build
-      --manifest $(manifest)
-      $(imageBuilderPaths)
-      $(osVersions)
-      --os-type $(osType)
-      --architecture $(architecture)
-      --retry
-      --source-repo $(publicGitRepoUri)
-      --digests-out-var 'builtImages'
-      --acr-subscription '$(acr.subscription)'
-      --acr-resource-group '$(acr.resourceGroup)'
-      --acr-client-id '$(acr.servicePrincipalName)'
-      --acr-password '$(acr.servicePrincipalPassword)'
-      --acr-tenant '$(acr.servicePrincipalTenant)'
-      $(manifestVariables)
-      $(imageBuilderBuildArgs)
-    name: BuildImages
-    displayName: Build Images
+  - template: /eng/common/templates/steps/run-imagebuilder.yml@self
+    parameters:
+      name: BuildImages
+      displayName: Build Images
+      serviceConnection: $(build.serviceConnectionName)
+      internalProjectName: ${{ parameters.internalProjectName }}
+      dockerClientOS: ${{ parameters.dockerClientOS }}
+      args: >
+        build
+        --manifest $(manifest)
+        $(imageBuilderPaths)
+        $(osVersions)
+        --os-type $(osType)
+        --architecture $(architecture)
+        --retry
+        --source-repo $(publicGitRepoUri)
+        --digests-out-var 'builtImages'
+        --acr-subscription '$(acr-staging.subscription)'
+        --acr-resource-group '$(acr-staging.resourceGroup)'
+        $(manifestVariables)
+        $(imageBuilderBuildArgs)
   - template: /eng/common/templates/steps/publish-artifact.yml@self
     parameters:
       path: $(imageInfoHostDir)
@@ -134,13 +142,8 @@ jobs:
       internalProjectName: ${{ parameters.internalProjectName }}
       publicProjectName: ${{ parameters.publicProjectName }}
   - ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
-      # Define the task here to load it into the agent so that we can invoke the tool manually
-      # TODO: Revert the build-specific pinned version when https://github.com/dotnet/docker-tools/issues/1152 is fixed
-    - task: AzureArtifacts.manifest-generator-task.manifest-generator-task.ManifestGeneratorTask@0.197.56
-      inputs:
-        BuildDropPath: $(Build.ArtifactStagingDirectory)
-      displayName: Load Manifest Generator
-      condition: and(succeeded(), ne(variables['BuildImages.builtImages'], ''))
+    # The following task depends on the SBOM Manifest Generator task installed on the agent.
+    # This task is auto-injected by 1ES Pipeline Templates so we don't need to install it ourselves.
     - powershell: |
         $images = "$(BuildImages.builtImages)"
         if (-not $images) { return 0 }
@@ -175,7 +178,7 @@ jobs:
         # Manifest tool docs: https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/secure-supply-chain/custom-sbom-generation-workflows
         $images -Split ',' | ForEach-Object {
           echo "Generating SBOM for $_";
-          $formattedImageName = $_.Replace('$(acr.server)/$(stagingRepoPrefix)', "").Replace('/', '_').Replace(':', '_');
+          $formattedImageName = $_.Replace('$(acr-staging.server)/$(stagingRepoPrefix)', "").Replace('/', '_').Replace(':', '_');
           $sbomChildDir = "$(sbomDirectory)/$formattedImageName";
           New-Item -Type Directory -Path $sbomChildDir > $null;
           & $dotnetPath "$manifestToolDllPath" `
