@@ -68,7 +68,7 @@ func run() error {
 				{
 					Architecture: arch,
 					Variant:      archVariant,
-					Dockerfile:   filepath.Dir(path),
+					Dockerfile:   filepath.ToSlash(filepath.Dir(path)),
 					OS:           os,
 					OSVersion:    version,
 					Tags: map[string]dockermanifest.Tag{
@@ -90,13 +90,13 @@ func run() error {
 
 	m := &dockermanifest.Manifest{
 		Readme:    map[string]string{"path": "README.md"},
-		Registry:  "golangpublicimages.azurecr.io",
+		Registry:  "mcr.microsoft.com",
 		Variables: make(map[string]interface{}),
 		Includes:  make([]string, 0),
 		Repos: []*dockermanifest.Repo{
 			{
-				ID:     "prereqs",
-				Name:   "go-infra-images/prereqs",
+				ID:     "infra-images",
+				Name:   "microsoft-go/infra-images",
 				Images: images,
 			},
 		},

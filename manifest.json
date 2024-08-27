@@ -2,13 +2,13 @@
   "readme": {
     "path": "README.md"
   },
-  "registry": "golangpublicimages.azurecr.io",
+  "registry": "mcr.microsoft.com",
   "variables": {},
   "includes": [],
   "repos": [
     {
-      "id": "prereqs",
-      "name": "go-infra-images/prereqs",
+      "id": "infra-images",
+      "name": "microsoft-go/infra-images",
       "images": [
         {
           "productVersion": "",
