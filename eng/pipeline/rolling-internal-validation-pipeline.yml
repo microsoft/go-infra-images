@@ -6,12 +6,6 @@
 
 trigger: none
 pr: none
-schedules:
-  - cron: '45 5 * * 2'
-    displayName: Weekly CodeQL
-    branches:
-      include:
-        - main
 
 # For info about runtime parameters, see https://github.com/microsoft/go-infra/blob/main/docs/pipeline-yml-style.md#runtime-parameters
 parameters:
@@ -39,6 +33,13 @@ variables:
       value: 0
 
 resources:
+  pipelines:
+    - pipeline: build
+      source: microsoft-go-infra-images-nightly
+      trigger:
+        branches:
+          include:
+            - main
   repositories:
     - repository: 1ESPipelineTemplates
       type: git
@@ -71,9 +72,11 @@ extends:
                 inputs:
                   version: 1.22.1
 
-              - script: go build ./...
+              - script: |
+                  go build ./...
                 displayName: go
 
               # Build no images, but exercise the PowerShell scripts.
-              - script: pwsh build.ps1 -DockerfilePath build_no_images
+              - script: |
+                  pwsh build.ps1 -Paths build_no_images
                 displayName: pwsh

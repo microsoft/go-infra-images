@@ -14,7 +14,12 @@ To build all Docker tags in this repository, run `pwsh build.ps1` in the root of
 
 ## Updating manifest.json
 
-After modifying the Dockerfiles, run `go run ./cmd/geninfraimagesmanifest` in the root of the repository. This regenerates the `manifest.json` file according to directory naming conventions. The `manifest.json` file is used by the `build.ps1` build process and CI builds.
+After adding or removing any Dockerfile, run `go run ./cmd/geninfraimagesmanifest` in the root of the repository.
+This regenerates the `manifest.json` file according to directory naming conventions.
+The `manifest.json` file is used by the `build.ps1` build process and CI builds.
+
+As long as your Dockerfile matches the conventions we expect in this repository, the command will succeed.
+If it doesn't succeed, you may need to move the Dockerfile or edit the command.
 
 ## Contributing
 

@@ -1,4 +1,8 @@
-# Check that manifest generation is repeatable.
+# Check that Dockerfile generation using "geninfraimagesmanifest" is repeatable. This makes sure the
+# manifest.json file is up to date and will build the correct images.
+parameters:
+  extraParameters: {}
+
 stages:
   - stage: Repeatability
     dependsOn: []
@@ -6,7 +10,12 @@ stages:
       - job: Test
         pool:
           # This is a utility job: use generic recent LTS.
-          vmImage: ubuntu-20.04
+          ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+            name: NetCore-Public
+            demands: ImageOverride -equals 1es-ubuntu-2004-open
+          ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
+            name: NetCore1ESPool-Internal
+            demands: ImageOverride -equals 1es-ubuntu-2004
         workspace:
           clean: all
         steps:
@@ -14,7 +23,7 @@ stages:
 
           - task: GoTool@0
             inputs:
-              version: 1.19
+              version: 1.20
 
           - script: go run ./cmd/geninfraimagesmanifest
             displayName: Run geninfraimagesmanifest

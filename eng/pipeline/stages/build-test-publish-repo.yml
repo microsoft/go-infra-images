@@ -1,69 +1,73 @@
 # Create Go Docker image build and publish stages.
 parameters:
-  internalProjectName: null
-  publicProjectName: null
-  buildMatrixType: platformDependencyGraph
+  extraParameters: {}
 
 stages:
-  - template: ../../common/templates/stages/build-test-publish-repo.yml
+  - template: /eng/common/templates/stages/build-test-publish-repo.yml@self
     parameters:
       buildMatrixCustomBuildLegGroupArgs: --custom-build-leg-group build
       noCache: true
-      internalProjectName: ${{ parameters.internalProjectName }}
-      publicProjectName: ${{ parameters.publicProjectName }}
-      buildMatrixType: ${{ parameters.buildMatrixType }}
       # Template paths must be relative to the YAML job that executes them
       customBuildInitSteps:
-        - template: ../../../pipeline/steps/set-public-source-branch-var.yml
+        - template: /eng/pipeline/steps/set-imagebuilder-build-args-var.yml@self
+        - template: /eng/pipeline/steps/set-public-source-branch-var.yml@self
       customPublishInitSteps:
-        - template: ../../../pipeline/steps/set-public-source-branch-var.yml
+        - template: /eng/pipeline/steps/set-public-source-branch-var.yml@self
 
       # Linux AMD64
       linuxAmd64Pool:
-        ${{ if eq(variables['System.TeamProject'], parameters.publicProjectName) }}:
-          vmImage: $(defaultLinuxAmd64PoolImage)
-        ${{ elseif eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+          name: NetCore-Public
+          demands: ImageOverride -equals build.ubuntu.2204.amd64.open
+        ${{ elseif eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
           name: NetCore1ESPool-Internal
           image: 1es-ubuntu-2204
           os: linux
-          
-      # Linux Arm64
+
+      # Linux ARM64
       linuxArm64Pool:
         os: linux
         hostArchitecture: Arm64
-        image: Mariner-2-Docker-ARM64
-        ${{ if eq(variables['System.TeamProject'], parameters.publicProjectName) }}:
-          name: DotNetCore-Docker-Public
-        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+          name: Docker-Linux-Arm-Public
+        ${{ elseif eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
           name: Docker-Linux-Arm-Internal
+          image: Mariner-2-Docker-ARM64
 
-      # Linux Arm32
+      # Linux ARM32
       linuxArm32Pool:
         os: linux
         hostArchitecture: Arm64
-        image: Mariner-2-Docker-ARM64
-        ${{ if eq(variables['System.TeamProject'], parameters.publicProjectName) }}:
-          name: DotNetCore-Docker-Public
-        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
+        ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+          name: Docker-Linux-Arm-Public
+        ${{ elseif eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
           name: Docker-Linux-Arm-Internal
+          image: Mariner-2-Docker-ARM64
 
-      # Windows Server 2016
+      # Windows 2016
       windows2016Pool:
         os: windows
         name: Docker-2016-${{ variables['System.TeamProject'] }}
         ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
           image: Server2016-NESDockerBuilds-PT
 
-      # Windows Server 2019 (1809)
-      windows1809Pool:
-        os: windows
-        name: Docker-1809-${{ variables['System.TeamProject'] }}
-        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
-          image: Server2019-1809-NESDockerBuilds-1ESPT
+      # Windows 2019 (1809)
+      ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+        windows1809Pool: Docker-1809-${{ variables['System.TeamProject'] }}
+      ${{ elseif eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
+        windows1809Pool:
+          name: NetCore1ESPool-Internal
+          image: 1es-windows-2019
+          os: windows
 
-      # Windows Server 2022
-      windows2022Pool:
-        os: windows
-        name: Docker-2022-${{ variables['System.TeamProject'] }}
-        ${{ if eq(variables['System.TeamProject'], parameters.internalProjectName) }}:
-          image: Server2022-NESDockerBuilds-1ESPT
+      # Windows 2022
+      ${{ if eq(variables['System.TeamProject'], parameters.extraParameters.publicProjectName) }}:
+        windows2022Pool: Docker-2022-${{ variables['System.TeamProject'] }}
+      ${{ elseif eq(variables['System.TeamProject'], parameters.extraParameters.internalProjectName) }}:
+        windows2022Pool:
+          name: NetCore1ESPool-Internal
+          image: 1es-windows-2022
+          os: windows
+
+      ${{ each pair in parameters.extraParameters }}:
+        ${{ pair.key }}: ${{ pair.value }}
