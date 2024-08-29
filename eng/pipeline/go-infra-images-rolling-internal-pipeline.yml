@@ -4,6 +4,13 @@ trigger:
     include:
       - main
 pr: none
+schedules:
+  - cron: '0 10 * * Tue,Thu'
+    displayName: Periodic build to refresh dependencies
+    branches:
+      include:
+        - microsoft/main
+    always: true
 
 variables:
   - template: variables/common.yml
@@ -18,14 +25,19 @@ resources:
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
-    pool:
-      name: NetCore1ESPool-Internal
-      image: 1es-windows-2022
-      os: windows
+    sdl:
+      sourceAnalysisPool:
+        name: NetCore1ESPool-Internal
+        image: 1es-windows-2022
+        os: windows
+      tsa:
+        enabled: true
+        configFile: $(Build.SourcesDirectory)/.config/tsa/tsaoptions.json
     stages:
       - template: stages/build-test-publish-repo.yml
         parameters:
-          # "variables.x" template expression only gets the correct value in this pipeline file. In a
-          # stage template, it returns an empty string. So, evaluate it here and pass it through.
-          internalProjectName: ${{ variables.internalProjectName }}
-          publicProjectName: ${{ variables.publicProjectName }}
+          extraParameters:
+            # "variables.x" template expression only gets the correct value in this pipeline file. In a
+            # stage template, it returns an empty string. So, evaluate it here and pass it through.
+            internalProjectName: ${{ variables.internalProjectName }}
+            publicProjectName: ${{ variables.publicProjectName }}

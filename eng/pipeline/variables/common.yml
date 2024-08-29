@@ -6,16 +6,22 @@ variables:
 - name: internalProjectName
   value: internal
 
-- name: commonVersionsImageInfoPath
-  value: build-info/docker
+# Credentials for pulling base images from Docker Hub.
+- name: dockerHubRegistryCreds
+  value: --registry-creds 'docker.io=$(dotnetDockerHubBot.userName);$(BotAccount-dotnet-dockerhub-bot-PAT)'
+
 - name: publicGitRepoUri
   value: https://github.com/microsoft/go
-- name: officialRepoPrefix
-  value: public/
+- name: officialRepoPrefixes
+  # Publish to "public/" or "private/internal/". Tags under these repo prefixes will be detected
+  # by MAR triggers and publish our images on the associated registry.
+  value: public/,private/internal/
 
+# Don't publish readme: these images aren't on Docker Hub.
 - name: publishReadme
   value: false
-# https://github.com/microsoft/go/issues/157 tracks enabling publishImageInfo.
+# Don't publish image info to https://github.com/dotnet/versions/tree/main/build-info
+# because the images aren't being published yet.
 - name: publishImageInfo
   value: false
 # https://github.com/microsoft/go/issues/192 tracks enabling ingestKustoImageInfo.
@@ -24,24 +30,68 @@ variables:
 
 - name: officialBranches
   # list multiple branches as "'branch1', 'branch2', etc."
-  value: "'main'"
+  value: main
 
 - name: manifest
   value: manifest.json
 
-# dotnet/versions repo path info is used in shared templates. Even though we aren't publishing
-# there, it needs to be specified to avoid pipeline errors when the variable is referenced in tasks.
+- ${{ if eq(variables['System.TeamProject'], 'internal') }}:
+  - group: go-docker-common
+  - group: Dotnet-Docker-Secrets-WIF
+
+- name: acr.password
+  value: $(BotAccount-golang-docker-acr-bot-password)
+- name: acr.servicePrincipalPassword
+  value: $(GolangDockerBuild)
+
+# We don't use a different ACR for staging vs. non-staging images.
+- name: acr-staging.resourceGroup
+  value: $(acr.resourceGroup)
+- name: acr-staging.server
+  value: $(acr.server)
+- name: acr-staging.serviceConnectionName
+  value: $(acr.serviceConnectionName)
+- name: acr-staging.subscription
+  value: $(acr.subscription)
+# We don't host a public mirror. Note: an empty string is necessary so the
+# variable is defined and .NET Docker logic works.
+- name: public-mirror.server
+  value: ''
+
+- name: test.serviceConnectionName
+  value: $(acr.serviceConnectionName)
+- name: internal-mirror.serviceConnectionName
+  value: $(acr.serviceConnectionName)
+- name: build.serviceConnectionName
+  value: $(acr.serviceConnectionName)
+- name: publish.serviceConnectionName
+  value: $(acr.serviceConnectionName)
+- name: marStatus.serviceConnectionName
+  value: ''
+- name: kusto.serviceConnectionName
+  value: ''
+
+# Configuration for publishing the image-info JSON file.
+- name: commonVersionsImageInfoPath
+  value: build-info/microsoft/go-infra-images
+
+# Configure image-info publishing.
+# Copied from /eng/common/templates/variables/dotnet/build-test-publish.yml
 - name: gitHubVersionsRepoInfo.path
   value: ${{ variables.commonVersionsImageInfoPath }}
 - name: azdoVersionsRepoInfo.path
   value: ${{ variables.commonVersionsImageInfoPath }}
-
-- ${{ if eq(variables['System.TeamProject'], 'internal') }}:
-  - group: go-docker-common-nightly
-  - group: go-docker-secrets
-  - group: go-docker-shared-DotNet-Docker-Secrets
-
-- name: acr.password
-  value: $(BotAccount-golang-docker-acr-public-bot-password)
-- name: acr.servicePrincipalPassword
-  value: $(GolangDockerBuild)
+- name: gitHubVersionsRepoInfo.org
+  value: dotnet
+- name: gitHubVersionsRepoInfo.repo
+  value: versions
+- name: gitHubVersionsRepoInfo.branch
+  value: main
+- name: gitHubVersionsRepoInfo.path
+  value: ${{ variables.commonVersionsImageInfoPath }}
+- name: gitHubVersionsRepoInfo.accessToken
+  value: $(BotAccount-dotnet-docker-bot-PAT)
+- name: gitHubVersionsRepoInfo.userName
+  value: $(dotnetDockerBot.userName)
+- name: gitHubVersionsRepoInfo.email
+  value: $(dotnetDockerBot.email)

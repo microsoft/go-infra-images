@@ -2,13 +2,13 @@
   "readme": {
     "path": "README.md"
   },
-  "registry": "golangpublicimages.azurecr.io",
+  "registry": "mcr.microsoft.com",
   "variables": {},
   "includes": [],
   "repos": [
     {
-      "id": "prereqs",
-      "name": "go-infra-images/prereqs",
+      "id": "infra-images",
+      "name": "microsoft-go/infra-images",
       "images": [
         {
           "productVersion": "",
@@ -16,12 +16,12 @@
           "platforms": [
             {
               "architecture": "amd64",
-              "dockerfile": "src/cbl-mariner/1.0/amd64/default",
+              "dockerfile": "src/cbl-mariner/2.0/amd64/default",
               "os": "linux",
-              "osVersion": "1.0",
+              "osVersion": "2.0",
               "tags": {
-                "cbl-mariner-1.0-amd64-default": {},
-                "cbl-mariner-1.0-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+                "cbl-mariner-2.0-amd64-default": {},
+                "cbl-mariner-2.0-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
               }
             }
           ]
@@ -32,12 +32,12 @@
           "platforms": [
             {
               "architecture": "amd64",
-              "dockerfile": "src/cbl-mariner/1.0/amd64/fips",
+              "dockerfile": "src/cbl-mariner/2.0/amd64/fips",
               "os": "linux",
-              "osVersion": "1.0",
+              "osVersion": "2.0",
               "tags": {
-                "cbl-mariner-1.0-amd64-fips": {},
-                "cbl-mariner-1.0-amd64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+                "cbl-mariner-2.0-amd64-fips": {},
+                "cbl-mariner-2.0-amd64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
               }
             }
           ]
@@ -48,12 +48,12 @@
           "platforms": [
             {
               "architecture": "arm64",
-              "dockerfile": "src/cbl-mariner/1.0/arm64/default",
+              "dockerfile": "src/cbl-mariner/2.0/arm64/default",
               "os": "linux",
-              "osVersion": "1.0",
+              "osVersion": "2.0",
               "tags": {
-                "cbl-mariner-1.0-arm64-default": {},
-                "cbl-mariner-1.0-arm64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+                "cbl-mariner-2.0-arm64-default": {},
+                "cbl-mariner-2.0-arm64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
               }
             }
           ]
@@ -64,12 +64,12 @@
           "platforms": [
             {
               "architecture": "arm64",
-              "dockerfile": "src/cbl-mariner/1.0/arm64/fips",
+              "dockerfile": "src/cbl-mariner/2.0/arm64/fips",
               "os": "linux",
-              "osVersion": "1.0",
+              "osVersion": "2.0",
               "tags": {
-                "cbl-mariner-1.0-arm64-fips": {},
-                "cbl-mariner-1.0-arm64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+                "cbl-mariner-2.0-arm64-fips": {},
+                "cbl-mariner-2.0-arm64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
               }
             }
           ]
@@ -80,12 +80,12 @@
           "platforms": [
             {
               "architecture": "amd64",
-              "dockerfile": "src/ubuntu/18.04/amd64/default",
+              "dockerfile": "src/ubuntu/20.04/amd64/default",
               "os": "linux",
-              "osVersion": "18.04",
+              "osVersion": "20.04",
               "tags": {
-                "ubuntu-18.04-amd64-default": {},
-                "ubuntu-18.04-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+                "ubuntu-20.04-amd64-default": {},
+                "ubuntu-20.04-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
               }
             }
           ]

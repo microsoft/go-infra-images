@@ -1,9 +1,28 @@
 parameters:
-  name: null
-  pool: {}
-  additionalOptions: null
-  publicProjectName: null
-  customInitSteps: []
+- name: name
+  type: string
+  default: null
+- name: pool
+  type: object
+  default: {}
+- name: acr
+  type: object
+  default: null
+- name: repoPrefix
+  type: string
+  default: null
+- name: customInitSteps
+  type: stepList
+  default: []
+- name: additionalOptions
+  type: string
+  default: ''
+- name: continueOnError
+  type: string
+  default: false
+- name: forceDryRun
+  type: boolean
+  default: false
 
 jobs:
 - job: ${{ parameters.name }}
@@ -13,6 +32,8 @@ jobs:
   - ${{ parameters.customInitSteps }}
   - template: /eng/common/templates/steps/copy-base-images.yml@self
     parameters:
+      acr: ${{ parameters.acr }} 
+      repoPrefix: ${{ parameters.repoPrefix }}
       additionalOptions: ${{ parameters.additionalOptions }}
-      publicProjectName: ${{ parameters.publicProjectName }}
-      continueOnError: true
+      continueOnError: ${{ parameters.continueOnError }}
+      forceDryRun: ${{ parameters.forceDryRun }}

@@ -1,18 +1,26 @@
 #!/usr/bin/env pwsh
-# From https://github.com/dotnet/dotnet-buildtools-prereqs-docker/blob/c54d34b99929259dc16252692e7bbd0da781559c/build.ps1
-[cmdletbinding()]
 param(
-    [string]$DockerfilePath = "*",
-    [string]$ImageBuilderCustomArgs
+    # Name of OS to filter by
+    [string]$OS,
+
+    # Type of architecture to filter by
+    [string]$Architecture,
+
+    # Additional custom path filters
+    [string[]]$Paths,
+
+    # Additional args to pass to ImageBuilder
+    [string]$OptionalImageBuilderArgs
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Stop'
-pushd $PSScriptRoot
-$ImageBuilderCustomArgs = "$ImageBuilderCustomArgs --var UniqueId=$(Get-Date -Format yyyyMMddHHmmss)"
-try {
-    ./eng/common/Invoke-ImageBuilder.ps1 "build --path '$DockerfilePath' $ImageBuilderCustomArgs"
-}
-finally {
-    popd
-}
+# This script is copied from .NET Docker and modified to suit our usage. See the original script
+# (https://github.com/dotnet/dotnet-docker/blob/main/build-and-test.ps1) when adding more
+# functionality here. Follow the .NET Docker methodology when possible for consistency and
+# compatibility with changes to the core .NET Docker shared infrastructure.
+
+# Build the product images.
+& $PSScriptRoot/common/build.ps1 `
+    -OS $OS `
+    -Architecture $Architecture `
+    -Paths $Paths `
+    -OptionalImageBuilderArgs $OptionalImageBuilderArgs
