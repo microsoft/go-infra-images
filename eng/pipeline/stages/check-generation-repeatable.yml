@@ -1,5 +1,5 @@
-# Check that Dockerfile generation using "geninfraimagesmanifest" is repeatable. This makes sure the
-# manifest.json file is up to date and will build the correct images.
+# Check that Dockerfile generation using "geninfra" is repeatable. This makes
+# sure the manifest.json file is up to date and will build the correct images.
 parameters:
   extraParameters: {}
 
@@ -25,8 +25,8 @@ stages:
             inputs:
               version: 1.20
 
-          - script: go run ./cmd/geninfraimagesmanifest
-            displayName: Run geninfraimagesmanifest
+          - script: go run ./cmd/geninfra
+            displayName: Run geninfra
 
           - script: |
               set -eux
