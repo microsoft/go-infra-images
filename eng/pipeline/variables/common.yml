@@ -13,9 +13,9 @@ variables:
 - name: publicGitRepoUri
   value: https://github.com/microsoft/go
 - name: officialRepoPrefixes
-  # Publish to "public/" or "private/internal/". Tags under these repo prefixes will be detected
-  # by MAR triggers and publish our images on the associated registry.
-  value: public/,private/internal/
+  # Publishing to these repo prefixes will be detected by MAR triggers and
+  # publish our images on the associated registry.
+  value: public/,private/internal/,unlisted/
 
 # Don't publish readme: these images aren't on Docker Hub.
 - name: publishReadme

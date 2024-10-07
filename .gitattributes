@@ -1,0 +1,3 @@
+# Check out all files as LF on Windows to make geninfra repeatable.
+# This could be more specific, but there's no reason to be.
+* -text
