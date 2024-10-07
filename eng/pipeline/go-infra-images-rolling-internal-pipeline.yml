@@ -9,7 +9,7 @@ schedules:
     displayName: Periodic build to refresh dependencies
     branches:
       include:
-        - microsoft/main
+        - main
     always: true
 
 variables:

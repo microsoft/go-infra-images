@@ -12,6 +12,9 @@ To build a specific docker image, run `docker build .` in a directory that conta
 
 To build all Docker tags in this repository, run `pwsh build.ps1` in the root of the repository.
 
+The tags on MAR are rebuilt and published approximately twice a week to update base image and distro package dependencies.
+If a PR is merged, that also triggers a rebuild.
+
 ## Using the images in CI
 
 A list of images is maintained in the [images.md](./images.md) file.
@@ -25,7 +28,7 @@ The `manifest.json` file is used by the `build.ps1` build process and CI builds.
 As long as your Dockerfile matches the conventions we expect in this repository, the command will succeed.
 If it doesn't succeed, you may need to move the Dockerfile or edit the command.
 
-Once the PR is merged, wait for the next rolling build, or check that your commit has been mirrored to the [internal repository](https://dev.azure.com/dnceng/internal/_git/microsoft-go-infra-images) and run [the pipeline](https://dev.azure.com/dnceng/internal/_build?definitionId=1170) manually.
+Check [the microsoft-go-infra-images-nightly pipeline](https://dev.azure.com/dnceng/internal/_build?definitionId=1170) for build status.
 
 ## Contributing
 
