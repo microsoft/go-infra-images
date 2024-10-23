@@ -59,7 +59,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 		var os string
 		switch distro {
-		case "cbl-mariner", "debian", "ubuntu":
+		case "cbl-mariner", "debian", "ubuntu", "azurelinux":
 			os = "linux"
 		default:
 			log.Printf("Didn't recognize distro, update %v: %v\n", "cmd/gen/main.go", distro)

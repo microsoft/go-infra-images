@@ -8,6 +8,11 @@ If a build hasn't occurred yet, the list may be out of date.
 
 For an accurate but harder to use list of currently available tags, see [the list API](https://mcr.microsoft.com/v2/microsoft-go/infra-images/tags/list).
 
+`azurelinux-3.0-amd64-default` ([src/azurelinux/3.0/amd64/default](./src/azurelinux/3.0/amd64/default/Dockerfile))
+```
+mcr.microsoft.com/microsoft-go/infra-images:azurelinux-3.0-amd64-default
+```
+
 `cbl-mariner-2.0-amd64-default` ([src/cbl-mariner/2.0/amd64/default](./src/cbl-mariner/2.0/amd64/default/Dockerfile))
 ```
 mcr.microsoft.com/microsoft-go/infra-images:cbl-mariner-2.0-amd64-default
