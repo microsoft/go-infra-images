@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu.azurecr.io/ubuntu:20.04
 
 # Based on https://github.com/dotnet/dotnet-buildtools-prereqs-docker/blob/c4da7a7d44bb3e9c177d1a65127010f777b8987c/src/ubuntu/20.04/Dockerfile
 # Then modified to remove some unnecessary tools and include dependencies for Go long tests.
