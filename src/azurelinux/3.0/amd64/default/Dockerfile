@@ -18,5 +18,6 @@ RUN set -eux; \
         iana-etc \
         kernel-headers \
         mercurial \
+        sudo \
     ; \
     tdnf clean all
