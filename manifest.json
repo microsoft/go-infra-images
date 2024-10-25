@@ -47,22 +47,6 @@
           "sharedTags": {},
           "platforms": [
             {
-              "architecture": "amd64",
-              "dockerfile": "src/cbl-mariner/2.0/amd64/fips",
-              "os": "linux",
-              "osVersion": "2.0",
-              "tags": {
-                "cbl-mariner-2.0-amd64-fips": {},
-                "cbl-mariner-2.0-amd64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
-              }
-            }
-          ]
-        },
-        {
-          "productVersion": "",
-          "sharedTags": {},
-          "platforms": [
-            {
               "architecture": "arm64",
               "dockerfile": "src/cbl-mariner/2.0/arm64/default",
               "os": "linux",
@@ -70,22 +54,6 @@
               "tags": {
                 "cbl-mariner-2.0-arm64-default": {},
                 "cbl-mariner-2.0-arm64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
-              }
-            }
-          ]
-        },
-        {
-          "productVersion": "",
-          "sharedTags": {},
-          "platforms": [
-            {
-              "architecture": "arm64",
-              "dockerfile": "src/cbl-mariner/2.0/arm64/fips",
-              "os": "linux",
-              "osVersion": "2.0",
-              "tags": {
-                "cbl-mariner-2.0-arm64-fips": {},
-                "cbl-mariner-2.0-arm64-fips-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
               }
             }
           ]
