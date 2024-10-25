@@ -14,7 +14,7 @@ RUN set -eux; \
         iana-etc \
         kernel-headers \
         mercurial \
-        openssl-devel \
         powershell \
+        sudo \
     ; \
     tdnf clean all
