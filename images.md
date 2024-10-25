@@ -38,3 +38,8 @@ mcr.microsoft.com/microsoft-go/infra-images:cbl-mariner-2.0-arm64-fips
 mcr.microsoft.com/microsoft-go/infra-images:ubuntu-20.04-amd64-default
 ```
 
+`ubuntu-22.04-amd64-default` ([src/ubuntu/22.04/amd64/default](./src/ubuntu/22.04/amd64/default/Dockerfile))
+```
+mcr.microsoft.com/microsoft-go/infra-images:ubuntu-22.04-amd64-default
+```
+

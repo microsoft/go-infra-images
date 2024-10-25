@@ -105,6 +105,22 @@
               }
             }
           ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "amd64",
+              "dockerfile": "src/ubuntu/22.04/amd64/default",
+              "os": "linux",
+              "osVersion": "22.04",
+              "tags": {
+                "ubuntu-22.04-amd64-default": {},
+                "ubuntu-22.04-amd64-default-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": {}
+              }
+            }
+          ]
         }
       ]
     }
