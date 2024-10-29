@@ -6,6 +6,7 @@ RUN set -eux; \
 	tdnf update -y; \
     tdnf install -y \
         binutils \
+        util-linux \
         ca-certificates-microsoft \
         gcc \
         git \
