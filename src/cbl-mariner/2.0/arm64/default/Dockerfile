@@ -17,5 +17,6 @@ RUN set -eux; \
         mercurial \
         powershell \
         sudo \
+        tar \
     ; \
     tdnf clean all
