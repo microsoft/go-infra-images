@@ -4,6 +4,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/fs"
 	"log"
@@ -13,13 +14,10 @@ import (
 
 	"github.com/microsoft/go-infra/buildmodel/dockermanifest"
 	"github.com/microsoft/go-infra/stringutil"
-	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:  "geninfra",
-	RunE: run,
-	Long: `Generates files in this repo based on the Dockerfiles in src.
+const description = `
+This command generates files in this repo based on the Dockerfiles in src.
 
 - manifest.json: lets .NET Docker infrastructure build this repository.
 - images.md: a list of the images in a format that a dev can more easily read and use.
@@ -31,16 +29,27 @@ Dockerfile paths are parsed using this convention:
 "name..." may include more "/". They are treated as "-" if needed to produce a tag name.
 Distros and arches have special handling, so ./cmd/geninfra/main.go may need to be adjusted when
 new platforms or special cases are added.
-	`,
-}
+`
 
 func main() {
-	if err := rootCmd.Execute(); err != nil {
+	var help = flag.Bool("h", false, "Print this help message.")
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage: geninfra\n")
+		flag.PrintDefaults()
+		fmt.Fprintf(flag.CommandLine.Output(), "%s\n", description)
+	}
+	flag.Parse()
+	if *help {
+		flag.Usage()
+		return
+	}
+
+	if err := run(); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func run(cmd *cobra.Command, args []string) error {
+func run() error {
 	var images []*dockermanifest.Image
 
 	err := filepath.WalkDir("src", func(path string, d fs.DirEntry, err error) error {
