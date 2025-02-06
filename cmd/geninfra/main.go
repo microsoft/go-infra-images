@@ -4,6 +4,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/fs"
@@ -13,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/microsoft/go-infra/buildmodel/dockermanifest"
-	"github.com/microsoft/go-infra/stringutil"
 )
 
 const description = `
@@ -124,11 +124,20 @@ func run() error {
 		},
 	}
 
-	if err := stringutil.WriteJSONFile("manifest.json", m); err != nil {
+	if err := writeJSONFile("manifest.json", m); err != nil {
 		return err
 	}
 
 	return writeImagesMD(m)
+}
+
+// writeJSONFile writes one specified value to a file as indented JSON with a trailing newline.
+func writeJSONFile(path string, i interface{}) (err error) {
+	out, err := json.MarshalIndent(i, "", "  ")
+	if err != nil {
+		return fmt.Errorf("unable to marshal model into JSON: %w", err)
+	}
+	return os.WriteFile(path, append(out, '\n'), 0o666)
 }
 
 func writeImagesMD(m *dockermanifest.Manifest) error {
