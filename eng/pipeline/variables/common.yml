@@ -24,6 +24,9 @@ variables:
 # because the images aren't being published yet.
 - name: publishImageInfo
   value: false
+# Publish EOL annotations for MAR/MCR.
+- name: publishEolAnnotations
+  value: true
 # https://github.com/microsoft/go/issues/192 tracks enabling ingestKustoImageInfo.
 - name: ingestKustoImageInfo
   value: false
