@@ -1,8 +1,24 @@
+parameters:
+# sourceBuildPipelineRunId should be overridden when skipping a build to run
+# tests or publish images that were produced in a different pipeline run.
+# Defaults to $(Build.BuildId) which refers to the current pipeline run.
+- name: sourceBuildPipelineRunId
+  type: string
+  default: ""
+
 variables:
 - template: /eng/common/templates/variables/docker-images.yml@self
 - template: /eng/common/templates/variables/common-paths.yml@self
-- name: stagingRepoPrefix
-  value: build-staging/$(sourceBuildId)/
+
+# stagingRepoPrefix defines where images will be pushed to in the staging repo,
+# which is defined in the $(acr-staging.server) variable.
+- ${{ if ne(parameters.sourceBuildPipelineRunId, '') }}:
+  - name: stagingRepoPrefix
+    value: build-staging/${{ parameters.sourceBuildPipelineRunId }}/
+- ${{ else }}:
+  - name: stagingRepoPrefix
+    value: build-staging/$(Build.BuildId)/
+
 - name: publishReadme
   value: true
 - name: publishImageInfo
@@ -16,6 +32,8 @@ variables:
 - name: build.imageBuilderDockerRunExtraOptions
   value: ""
 - name: imageBuilderDockerRunExtraOptions
+  value: ""
+- name: generateEolAnnotationDataExtraOptions
   value: ""
 - name: productVersionComponents
   value: 2
@@ -42,6 +60,10 @@ variables:
   value: ""
 - name: customCopyBaseImagesArgs
   value: ""
+- name: additionalGenerateBuildMatrixOptions
+  value: ""
+- name: trimCachedImagesForMatrix
+  value: false
 
 - name: defaultLinuxAmd64PoolImage
   value: ubuntu-latest
@@ -55,6 +77,18 @@ variables:
   value: windows-2019
 - name: defaultWindows2022PoolImage
   value: windows-2022
+- name: defaultWindows2025PoolImage
+  value: windows-2025
+
+- name: default1ESInternalPoolName
+  value: NetCore1ESPool-Internal
+- name: default1ESInternalPoolImage
+  value: 1es-ubuntu-2204
+
+- name: defaultSourceAnalysisPoolName
+  value: NetCore1ESPool-Internal
+- name: defaultSourceAnalysisPoolImage
+  value: 1es-windows-2022
 
 # Define these as placeholder values to allow string validation to succeed since we don't have the
 # variable group with the actual values in public builds. For internal builds, the variable group

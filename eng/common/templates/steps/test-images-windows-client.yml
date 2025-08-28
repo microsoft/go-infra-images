@@ -2,6 +2,7 @@ parameters:
   internalProjectName: null
   condition: true
   customInitSteps: []
+  sourceBuildPipelineRunId: ""
 
 steps:
 - ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
@@ -16,19 +17,16 @@ steps:
       serviceConnection: $(test.serviceConnectionName)
       dockerClientOS: windows
       condition: and(succeeded(), ${{ parameters.condition }})
-      command: >
+      command: >-
         az login --service-principal --tenant $env:tenantId -u $env:servicePrincipalId --federated-token $env:idToken;
         $accessToken = $(az acr login -n $(acr-staging.server) --expose-token --query accessToken --output tsv);
         docker login $(acr-staging.server) -u 00000000-0000-0000-0000-000000000000 -p $accessToken
 - ${{ parameters.customInitSteps }}
 - powershell: |
     if ("${{ variables['System.TeamProject'] }}" -eq "${{ parameters.internalProjectName }}" -and "${{ variables['Build.Reason'] }}" -ne "PullRequest") {
-      $optionalTestArgs="$optionalTestArgs -PullImages -Registry ${env:ACR-STAGING_SERVER} -RepoPrefix $env:STAGINGREPOPREFIX -ImageInfoPath $(artifactsPath)/image-info.json"
+      $additionalTestArgs="$env:ADDITIONALTESTARGS -PullImages -Registry ${env:ACR-STAGING_SERVER} -RepoPrefix $env:STAGINGREPOPREFIX -ImageInfoPath $(artifactsPath)/image-info.json"
     }
-    if ($env:REPOTESTARGS) {
-      $optionalTestArgs += " $env:REPOTESTARGS"
-    }
-    echo "##vso[task.setvariable variable=optionalTestArgs]$optionalTestArgs"
+    echo "##vso[task.setvariable variable=additionalTestArgs]$additionalTestArgs"
   displayName: Set Test Variables
   condition: and(succeeded(), ${{ parameters.condition }})
 - powershell: Get-ChildItem -Path tests -r | Where {$_.Extension -match "trx"} | Remove-Item
@@ -40,13 +38,14 @@ steps:
       targetPath: $(Build.ArtifactStagingDirectory)
       artifactName: image-info
       condition: ${{ parameters.condition }}
+      pipelineRunId: ${{ parameters.sourceBuildPipelineRunId }}
 - template: /eng/common/templates/steps/parse-test-arg-arrays.yml@self
 - powershell: >
     $(test.init);
     $(testScriptPath)
     -Paths $(imageBuilderPathsArrayInitStr)
     -OSVersions $(osVersionsArrayInitStr)
-    $(optionalTestArgs)
+    $(additionalTestArgs)
   displayName: Test Images
   condition: and(succeeded(), ${{ parameters.condition }})
 - ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
