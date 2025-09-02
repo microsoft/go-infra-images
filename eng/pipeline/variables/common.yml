@@ -1,5 +1,17 @@
+parameters:
+  - name: sourceBuildPipelineRunId
+    type: string
+    default: ""
+
 variables:
 - template: ../../common/templates/variables/common.yml
+  parameters:
+    sourceBuildPipelineRunId: ${{ parameters.sourceBuildPipelineRunId }}
+
+- template: pipeline.yml
+
+- name: sourceBuildPipelineRunId
+  value: ${{ parameters.sourceBuildPipelineRunId }}
 
 - name: publicProjectName
   value: public
@@ -20,10 +32,9 @@ variables:
 # Don't publish readme: these images aren't on Docker Hub.
 - name: publishReadme
   value: false
-# Don't publish image info to https://github.com/dotnet/versions/tree/main/build-info
-# because the images aren't being published yet.
+# Publish image info to https://github.com/dotnet/versions/tree/main/build-info
 - name: publishImageInfo
-  value: false
+  value: true
 # Publish EOL annotations for MAR/MCR.
 - name: publishEolAnnotations
   value: true
@@ -39,8 +50,8 @@ variables:
   value: manifest.json
 
 - ${{ if eq(variables['System.TeamProject'], 'internal') }}:
-  - group: go-docker-common
-  - group: Dotnet-Docker-Secrets-WIF
+  - group: go-docker-common-2
+  - group: Microsoft-GoLang-bot
 
 - name: acr.password
   value: $(BotAccount-golang-docker-acr-bot-password)
@@ -52,8 +63,6 @@ variables:
   value: $(acr.resourceGroup)
 - name: acr-staging.server
   value: $(acr.server)
-- name: acr-staging.serviceConnectionName
-  value: $(acr.serviceConnectionName)
 - name: acr-staging.subscription
   value: $(acr.subscription)
 # We don't host a public mirror. Note: an empty string is necessary so the
@@ -61,22 +70,9 @@ variables:
 - name: public-mirror.server
   value: ''
 
-- name: test.serviceConnectionName
-  value: $(acr.serviceConnectionName)
-- name: internal-mirror.serviceConnectionName
-  value: $(acr.serviceConnectionName)
-- name: build.serviceConnectionName
-  value: $(acr.serviceConnectionName)
-- name: publish.serviceConnectionName
-  value: $(acr.serviceConnectionName)
-- name: marStatus.serviceConnectionName
-  value: ''
-- name: kusto.serviceConnectionName
-  value: ''
-
 # Configuration for publishing the image-info JSON file.
 - name: commonVersionsImageInfoPath
-  value: build-info/microsoft/go-infra-images
+  value: go-infra-images
 
 # Configure image-info publishing.
 # Copied from /eng/common/templates/variables/dotnet/build-test-publish.yml
@@ -85,16 +81,69 @@ variables:
 - name: azdoVersionsRepoInfo.path
   value: ${{ variables.commonVersionsImageInfoPath }}
 - name: gitHubVersionsRepoInfo.org
-  value: dotnet
+  value: microsoft
 - name: gitHubVersionsRepoInfo.repo
-  value: versions
+  value: go-images-versions
 - name: gitHubVersionsRepoInfo.branch
   value: main
 - name: gitHubVersionsRepoInfo.path
   value: ${{ variables.commonVersionsImageInfoPath }}
-- name: gitHubVersionsRepoInfo.accessToken
-  value: $(BotAccount-dotnet-docker-bot-PAT)
+- name: gitHubVersionsRepoInfo.authArgs
+  value: >-
+    --gh-private-key '$(BotAccount-bot-for-go-private-key)'
+    --gh-app-client-id '$(BotAccount-bot-for-go-client-id)'
+    --gh-app-installation-id '$(BotAccount-bot-for-go-installation)'
 - name: gitHubVersionsRepoInfo.userName
-  value: $(dotnetDockerBot.userName)
+  value: bot-for-go[bot]
 - name: gitHubVersionsRepoInfo.email
-  value: $(dotnetDockerBot.email)
+  # App's user id: https://api.github.com/users/bot-for-go%5Bbot%5D
+  value: 199222863+$(gitHubVersionsRepoInfo.userName)@users.noreply.github.com
+
+# Pool/image configuration.
+# Copied from /eng/common/templates/variables/dotnet/common.yml
+- name: linuxAmd64InternalPoolImage
+  value: 1es-ubuntu-2204
+- name: linuxAmd64InternalPoolName
+  value: NetCore1ESPool-Internal
+
+- name: linuxArm64PoolImage
+  value: Mariner-2-Docker-ARM64
+- name: linuxArm64PublicPoolName
+  value: Docker-Linux-Arm-Public
+- name: linuxArm64InternalPoolName
+  value: Docker-Linux-Arm-Internal
+
+- name: linuxArm32PoolImage
+  value: Mariner-2-Docker-ARM64
+- name: linuxArm32PublicPoolName
+  value: Docker-Linux-Arm-Public
+- name: linuxArm32InternalPoolName
+  value: Docker-Linux-Arm-Internal
+
+- name: windowsServer2016PublicPoolImage
+  value: Server2016-NESDockerBuilds
+- name: windowsServer2016InternalPoolImage
+  value: Server2016-NESDockerBuilds-1ESPT
+- name: windowsServer2016PoolName
+  value: Docker-2016-${{ variables['System.TeamProject'] }}
+
+- name: windowsServer2019PublicPoolImage
+  value: Server2019-1809-NESDockerBuilds
+- name: windowsServer2019InternalPoolImage
+  value: Server2019-1809-NESDockerBuilds-1ESPT
+- name: windowsServer2019PoolName
+  value: Docker-1809-${{ variables['System.TeamProject'] }}
+
+- name: windowsServer2022PublicPoolImage
+  value: Server2022-NESDockerBuilds
+- name: windowsServer2022InternalPoolImage
+  value: Server2022-NESDockerBuilds-1ESPT
+- name: windowsServer2022PoolName
+  value: Docker-2022-${{ variables['System.TeamProject'] }}
+
+- name: windowsServer2025PublicPoolImage
+  value: Server2025-NESDockerBuilds
+- name: windowsServer2025InternalPoolImage
+  value: Server2025-NESDockerBuilds-1ESPT
+- name: windowsServer2025PoolName
+  value: Docker-2025-${{ variables['System.TeamProject'] }}

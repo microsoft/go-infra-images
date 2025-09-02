@@ -3,6 +3,7 @@ parameters:
   internalProjectName: null
   condition: true
   customInitSteps: []
+  sourceBuildPipelineRunId: ""
 
 steps:
 - template: /eng/common/templates/steps/init-docker-linux.yml@self
@@ -17,18 +18,18 @@ steps:
 - script: |
     echo "##vso[task.setvariable variable=testRunner.container]testrunner-$(Build.BuildId)-$(System.JobId)"
 
-    optionalTestArgs=""
+    additionalTestArgs="$ADDITIONALTESTARGS"
     if [ "${{ parameters.preBuildValidation }}" == "true" ]; then
-      optionalTestArgs="$optionalTestArgs -TestCategories pre-build"
+      additionalTestArgs="$additionalTestArgs -TestCategories pre-build"
     else
       if [ "${{ variables['System.TeamProject'] }}" == "${{ parameters.internalProjectName }}" ] && [ "${{ variables['Build.Reason'] }}" != "PullRequest" ]; then
-        optionalTestArgs="$optionalTestArgs -PullImages -Registry $(acr-staging.server) -RepoPrefix $(stagingRepoPrefix) -ImageInfoPath $(artifactsPath)/image-info.json"
-      fi
-      if [ "$REPOTESTARGS" != "" ]; then
-        optionalTestArgs="$optionalTestArgs $REPOTESTARGS"
+        additionalTestArgs="$additionalTestArgs -PullImages -Registry $(acr-staging.server) -RepoPrefix $(stagingRepoPrefix) -ImageInfoPath $(artifactsPath)/image-info.json"
+        if [ "$TESTCATEGORIESOVERRIDE" != "" ]; then
+          additionalTestArgs="$additionalTestArgs -TestCategories $TESTCATEGORIESOVERRIDE"
+        fi
       fi
     fi
-    echo "##vso[task.setvariable variable=optionalTestArgs]$optionalTestArgs"
+    echo "##vso[task.setvariable variable=additionalTestArgs]$additionalTestArgs"
   displayName: Set Test Variables
   condition: and(succeeded(), ${{ parameters.condition }})
 - script: >
@@ -47,7 +48,7 @@ steps:
       displayName: Docker login
       serviceConnection: $(test.serviceConnectionName)
       condition: and(succeeded(), ${{ parameters.condition }})
-      command: >
+      command: >-
         $azLoginArgs = '--service-principal --tenant $env:AZURE_TENANT_ID -u $env:AZURE_CLIENT_ID --federated-token $env:AZURE_FEDERATED_TOKEN';
         docker exec -e AZURE_TENANT_ID=$env:tenantId -e AZURE_CLIENT_ID=$env:servicePrincipalId -e AZURE_FEDERATED_TOKEN=$env:idToken $(testRunner.container) pwsh
         -File $(engCommonRelativePath)/Invoke-WithRetry.ps1
@@ -58,6 +59,7 @@ steps:
         targetPath: $(Build.ArtifactStagingDirectory)
         artifactName: image-info
         condition: ${{ parameters.condition }}
+        pipelineRunId: ${{ parameters.sourceBuildPipelineRunId }}
 - template: /eng/common/templates/steps/parse-test-arg-arrays.yml@self
 - powershell: >
     $(test.init);
@@ -69,7 +71,7 @@ steps:
     -Paths $(imageBuilderPathsArrayInitStr)
     -OSVersions $(osVersionsArrayInitStr)
     -Architecture '$(architecture)'
-    $(optionalTestArgs)"
+    $(additionalTestArgs)"
   displayName: Test Images
   condition: and(succeeded(), ${{ parameters.condition }})
 - ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:

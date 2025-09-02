@@ -94,8 +94,6 @@ func run() error {
 					OS:           os,
 					OSVersion:    version,
 					Tags: map[string]dockermanifest.Tag{
-						// Pinned tag to use in e.g microsoft/go CI, for stability.
-						tag + "-$(System:TimeStamp)-$(System:DockerfileGitCommitSha)": struct{}{},
 						// Floating tag to use for build dependencies between Dockerfiles in this
 						// repo. The .NET Docker infrastructure matches up this tag with "FROM x"
 						// statements to determine the build order.
