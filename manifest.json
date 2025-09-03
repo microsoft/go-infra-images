@@ -61,21 +61,6 @@
           "platforms": [
             {
               "architecture": "amd64",
-              "dockerfile": "src/ubuntu/20.04/amd64/default",
-              "os": "linux",
-              "osVersion": "20.04",
-              "tags": {
-                "ubuntu-20.04-amd64-default": {}
-              }
-            }
-          ]
-        },
-        {
-          "productVersion": "",
-          "sharedTags": {},
-          "platforms": [
-            {
-              "architecture": "amd64",
               "dockerfile": "src/ubuntu/22.04/amd64/default",
               "os": "linux",
               "osVersion": "22.04",
