@@ -8,8 +8,6 @@ variables:
   parameters:
     sourceBuildPipelineRunId: ${{ parameters.sourceBuildPipelineRunId }}
 
-- template: pipeline.yml
-
 - name: sourceBuildPipelineRunId
   value: ${{ parameters.sourceBuildPipelineRunId }}
 

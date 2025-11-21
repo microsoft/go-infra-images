@@ -17,11 +17,11 @@ parameters:
   - name: enableCodeQL
     displayName: '[Debug input] Enable CodeQL, even on a dev branch.'
     type: boolean
-    default: false
+    default: true
   - name: disableTSA
     displayName: '[Debug input] Disable TSA reporting. Use to try modifications in dev branches.'
     type: boolean
-    default: false
+    default: true
 variables:
   - name: Codeql.PublishDatabase
     value: true
@@ -39,17 +39,13 @@ resources:
   pipelines:
     - pipeline: build
       source: microsoft-go-infra-images-nightly (official)
-      trigger:
-        branches:
-          include:
-            - main
   repositories:
     - repository: 1ESPipelineTemplates
       type: git
       name: 1ESPipelineTemplates/1ESPipelineTemplates
       ref: refs/tags/release
 extends:
-  template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
+  template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     pool:
       name: NetCore1ESPool-Internal
