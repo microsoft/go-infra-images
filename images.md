@@ -8,6 +8,13 @@ If a build hasn't occurred yet, the list may be out of date.
 
 For an accurate but harder to use list of currently available tags, see [the list API](https://mcr.microsoft.com/v2/microsoft-go/infra-images/tags/list).
 
+> [!NOTE]
+> Prior to 2025-04, we produced tags with the timestamp and commit in the name, and we no longer do.
+> The lack of timestamped tags in the raw list API may make our tags appear old, but that isn't a good indicator.
+> Use a docker/podman "inspect" command to properly determine age.
+>
+> See [PR#40](https://github.com/microsoft/go-infra-images/pull/40) for more information about why we made this change.
+
 `azurelinux-3.0-amd64-default` ([src/azurelinux/3.0/amd64/default](./src/azurelinux/3.0/amd64/default/Dockerfile))
 ```
 mcr.microsoft.com/microsoft-go/infra-images:azurelinux-3.0-amd64-default
