@@ -8,7 +8,6 @@ RUN apt-get update \
         gcc \
         gdb \
         git \
-        mercurial \
         sudo \
     && rm -rf /var/lib/apt/lists/*
 
