@@ -14,7 +14,6 @@ RUN set -eux; \
         glibc-devel \
         iana-etc \
         kernel-headers \
-        mercurial \
         powershell \
         sudo \
         tar \
