@@ -14,7 +14,8 @@ RUN set -eux; \
         glibc-devel \
         iana-etc \
         kernel-headers \
-        powershell \
+        # Pin powershell: 7.6.0 requires dotnet-runtime-10.0, which isn't available for CBL-Mariner 2.0.
+        powershell-7.5.5 \
         sudo \
         tar \
     ; \
