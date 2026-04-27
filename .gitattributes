@@ -1,5 +1,5 @@
-# Check out all files as LF on Windows to make geninfra repeatable.
-# This could be more specific, but there's no reason to be.
-* -text
+# Normalize text files to LF in the repo and on checkout, so that geninfra
+# is repeatable regardless of the platform the repo was checked out on.
+* text=auto eol=lf
 
 .github/workflows/*.lock.yml linguist-generated=true merge=ours
