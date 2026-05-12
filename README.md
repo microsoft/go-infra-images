@@ -1,4 +1,4 @@
-# Microsoft Go Infrastructure Docker Images
+# Microsoft build of Go Infrastructure Docker Images
 
 The Dockerfiles in this repository are used by Microsoft to produce Docker images that support building and testing the Go compiler inside Microsoft infrastructure.
 
