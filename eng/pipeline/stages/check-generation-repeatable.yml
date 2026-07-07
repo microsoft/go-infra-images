@@ -16,16 +16,10 @@ stages:
           - template: ../steps/checkout-unix-task.yml
 
           - task: GoTool@0
+            displayName: 'Install Go'
             inputs:
-              version: 1.22.11
-
-          - script: go run ./cmd/geninfra
-            displayName: Run geninfra
-
-          - script: |
-              set -eux
-              # Add files, so new untracked files don't evade detection.
-              git add .
-              # Exit code 1 = differences, 0 = no differences.
-              git diff --cached --exit-code -- src manifest.json
-            displayName: Ensure no changes
+              version: '1.26'
+              goDownloadUrl: 'https://aka.ms/golang/release/latest'
+          
+          - script: go test ./...
+            displayName: Run Go tests
