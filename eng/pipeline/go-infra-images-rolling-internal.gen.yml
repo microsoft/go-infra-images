@@ -34,14 +34,11 @@ schedules:
       always: true
 
 parameters:
-  - name: _info
-    displayName: >
-      ℹ️ This pipeline builds and publishes the infrastructure images we use to test the Microsoft
-      build of Go, its crypto backends, and other related components. These images do not include
-      the Microsoft build of Go itself.
-    type: string
-    values:
-      - ${ cat "🔵 " .output " 🔵 🔵" }
+  - ${ inlinetemplate "util/info.gen.yml" }:
+      desc: >
+        This pipeline builds and publishes the infrastructure images we use to test the Microsoft
+        build of Go, its crypto backends, and other related components. These images do not include
+        the Microsoft build of Go itself.
 
   - name: sourceBuildPipelineRunId
     displayName: >
