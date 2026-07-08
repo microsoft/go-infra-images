@@ -4,6 +4,7 @@
 
 # public: https://dev.azure.com/dnceng-public/public/_build?definitionId=211
 
+trigger: none
 pr:
   branches:
     include:
