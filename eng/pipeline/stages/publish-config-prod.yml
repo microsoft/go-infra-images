@@ -56,7 +56,8 @@ stages:
           repoPrefix: $(publicMirrorRepoPrefix)
         BuildRegistry:
           server: $(acr-staging.server)
-          repoPrefix: "${{ parameters.stagingRepoPrefix }}${{ parameters.sourceBuildPipelineRunId }}/"
+          repoPrefix: "${{ parameters.stagingRepoPrefix }}${{ parameters.sourceBuildPipelineRunId
+            }}/"
         PublishRegistry:
           server: $(acr.server)
           repoPrefix: "${{ parameters.publishRepoPrefix }}"
