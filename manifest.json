@@ -46,36 +46,6 @@
           "platforms": [
             {
               "architecture": "amd64",
-              "dockerfile": "src/cbl-mariner/2.0/amd64/default",
-              "os": "linux",
-              "osVersion": "2.0",
-              "tags": {
-                "cbl-mariner-2.0-amd64-default": {}
-              }
-            }
-          ]
-        },
-        {
-          "productVersion": "",
-          "sharedTags": {},
-          "platforms": [
-            {
-              "architecture": "arm64",
-              "dockerfile": "src/cbl-mariner/2.0/arm64/default",
-              "os": "linux",
-              "osVersion": "2.0",
-              "tags": {
-                "cbl-mariner-2.0-arm64-default": {}
-              }
-            }
-          ]
-        },
-        {
-          "productVersion": "",
-          "sharedTags": {},
-          "platforms": [
-            {
-              "architecture": "amd64",
               "dockerfile": "src/ubuntu/22.04/amd64/default",
               "os": "linux",
               "osVersion": "22.04",
