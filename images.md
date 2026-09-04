@@ -25,16 +25,6 @@ mcr.microsoft.com/microsoft-go/infra-images:azurelinux-3.0-amd64-default
 mcr.microsoft.com/microsoft-go/infra-images:azurelinux-3.0-arm64-default
 ```
 
-`cbl-mariner-2.0-amd64-default` ([src/cbl-mariner/2.0/amd64/default](./src/cbl-mariner/2.0/amd64/default/Dockerfile))
-```
-mcr.microsoft.com/microsoft-go/infra-images:cbl-mariner-2.0-amd64-default
-```
-
-`cbl-mariner-2.0-arm64-default` ([src/cbl-mariner/2.0/arm64/default](./src/cbl-mariner/2.0/arm64/default/Dockerfile))
-```
-mcr.microsoft.com/microsoft-go/infra-images:cbl-mariner-2.0-arm64-default
-```
-
 `ubuntu-22.04-amd64-default` ([src/ubuntu/22.04/amd64/default](./src/ubuntu/22.04/amd64/default/Dockerfile))
 ```
 mcr.microsoft.com/microsoft-go/infra-images:ubuntu-22.04-amd64-default
