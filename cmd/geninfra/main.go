@@ -68,10 +68,10 @@ func run() error {
 
 		var os string
 		switch distro {
-		case "cbl-mariner", "debian", "ubuntu", "azurelinux":
+		case "debian", "ubuntu", "azurelinux":
 			os = "linux"
 		default:
-			log.Printf("Didn't recognize distro, update %v: %v\n", "cmd/gen/main.go", distro)
+			log.Printf("Didn't recognize distro, update %v: %v\n", "cmd/geninfra/main.go", distro)
 			return nil
 		}
 
