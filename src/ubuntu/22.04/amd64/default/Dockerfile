@@ -1,7 +1,7 @@
 FROM ubuntu.azurecr.io/ubuntu:22.04
 
 # CFSClean3 blocks archive.ubuntu.com in network-isolated builds.
-RUN sed -i 's|archive.ubuntu.com|azure.archive.ubuntu.com|g' /etc/apt/sources.list
+RUN sed -i 's|//archive.ubuntu.com|//azure.archive.ubuntu.com|g' /etc/apt/sources.list
 
 # Install dependencies needed to build, test, and longtest Go.
 RUN apt-get update \
