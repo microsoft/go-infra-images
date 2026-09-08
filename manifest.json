@@ -46,6 +46,36 @@
           "platforms": [
             {
               "architecture": "amd64",
+              "dockerfile": "src/azurelinux/4.0/amd64/default",
+              "os": "linux",
+              "osVersion": "4.0",
+              "tags": {
+                "azurelinux-4.0-amd64-default": {}
+              }
+            }
+          ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "arm64",
+              "dockerfile": "src/azurelinux/4.0/arm64/default",
+              "os": "linux",
+              "osVersion": "4.0",
+              "tags": {
+                "azurelinux-4.0-arm64-default": {}
+              }
+            }
+          ]
+        },
+        {
+          "productVersion": "",
+          "sharedTags": {},
+          "platforms": [
+            {
+              "architecture": "amd64",
               "dockerfile": "src/ubuntu/22.04/amd64/default",
               "os": "linux",
               "osVersion": "22.04",
