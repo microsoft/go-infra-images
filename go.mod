@@ -1,8 +1,8 @@
 module github.com/microsoft/go-infra-images
 
-go 1.25.0
+go 1.26.0
 
-require github.com/microsoft/go-infra v0.0.16
+require github.com/microsoft/go-infra v0.0.17
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
@@ -16,8 +16,8 @@ require (
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	go.yaml.in/yaml/v4 v4.0.0-rc.6 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
-	golang.org/x/text v0.39.0 // indirect
+	golang.org/x/crypto v0.57.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 )
 
 tool github.com/microsoft/go-infra/cmd/pipelineymlgen
