@@ -42,6 +42,13 @@ variables:
   # publish our images on the associated registry.
   value: public/,private/internal/,unlisted/
 
+# GitHub App client and installation IDs are public identifiers. Keep the
+# private key in the Microsoft-GoLang-bot Key Vault-backed variable group.
+- name: GitHubApp-bot-for-go-client-id
+  value: 'Iv23ctc1C0P0qEaXMUVk'
+- name: GitHubApp-bot-for-go-microsoft-installation-id
+  value: '61276299'
+
 - name: gitHubVersionsRepoInfo.org
   value: microsoft
 - name: gitHubVersionsRepoInfo.repo
