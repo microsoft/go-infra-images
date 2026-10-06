@@ -2,7 +2,7 @@ module github.com/microsoft/go-infra-images
 
 go 1.26.0
 
-require github.com/microsoft/go-infra v0.0.19
+require github.com/microsoft/go-infra v0.0.20
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
