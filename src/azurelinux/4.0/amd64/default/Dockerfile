@@ -17,6 +17,7 @@ RUN set -eux; \
         glibc-devel \
         kernel-headers \
         setup \
+        shadow-utils \
         sudo \
     ; \
     dnf clean all
