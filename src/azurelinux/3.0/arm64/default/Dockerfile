@@ -15,6 +15,7 @@ RUN set -eux; \
         git \
         glibc \
         glibc-devel \
+        glibc-static \
         iana-etc \
         kernel-headers \
         sudo \
